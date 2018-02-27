@@ -1,9 +1,16 @@
-export default function playState() {
+import io from 'socket.io-client';
+
+export default function playState(game) {
+    //We first initialize the phaser game object
+    var WINDOW_WIDTH = 1200;
+    var WINDOW_HEIGHT = 1200;
     var WORLD_SIZE = { w: 1200, h: 1200 };
 
     var water_tiles = [];
     var bullet_array = [];
-    
+
+    var game = game;
+    var ASSET_URL = "assets/"
 
     var socket; //Declare it in this scope, initialize in the `create` function
     var other_players = {};
@@ -24,7 +31,7 @@ export default function playState() {
             dir = dir * Math.PI * 2;
             this.sprite.rotation += dir * 0.1;
             // Move forward
-            if (game.input.keyboard.isDown(Phaser.Keyboard.W) || game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+            if (game.input.keyboard.isDown(window.Phaser.Keyboard.W) || game.input.keyboard.isDown(window.Phaser.Keyboard.UP)) {
                 this.speed_x += Math.cos(this.sprite.rotation + Math.PI / 2) * this.speed;
                 this.speed_y += Math.sin(this.sprite.rotation + Math.PI / 2) * this.speed;
             }
@@ -111,7 +118,7 @@ export default function playState() {
                     // If the player hasn't been created yet
                     if (other_players[id] == undefined && id != socket.id) { // Make sure you don't create yourself
                         var data = players_data[id];
-                        var p = CreateShip(data.type, data.x, data.y, data.angle);
+                        var p = this.CreateShip(data.type, data.x, data.y, data.angle);
                         other_players[id] = p;
                         console.log("Created new player at (" + data.x + ", " + data.y + ")");
                     }
@@ -206,4 +213,4 @@ export default function playState() {
 
         }
     }
-} 
+}
