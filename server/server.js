@@ -1,22 +1,3 @@
-// const express = require('express');
-// const socketIO = require('socket.io');
-
-// const port = 3003;
-// const app = express();
-// const io = socketIO(app.listen(port, console.log('Listening on port', port)));
-
-// io.on('connection', (socket) => {
-//   console.log('User connected');
-
-//   socket.on('message', () => {
-//     console.log('Message sent');
-//   });
-
-//   socket.on('disconnect', () => {
-//     console.log('User disconnected');
-//   });
-// });
-
 var express = require('express'); // Express contains some boilerplate to for routing and such
 var app = express();
 var http = require('http').Server(app);
