@@ -4,9 +4,9 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http); // Here's where we include socket.io as a node module 
 
 // We no longer need this.
-// // Serve the index page 
+// // Serve the index page
 // app.get("/", function (request, response) {
-//   response.sendFile(__dirname + '/index.html'); 
+//   response.sendFile(__dirname + '/index.html');
 // });
 
 // Serve the assets directory

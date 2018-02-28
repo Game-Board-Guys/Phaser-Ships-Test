@@ -18,7 +18,7 @@ export default function loadState(game) {
             this.game.load.image('water', ASSET_URL + 'water_tile.png');
         },
         create: function () {
-            this.game.state.start('play')
+            return this.game.state.start('play')
         }
     }
 }

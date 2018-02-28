@@ -11,17 +11,17 @@ export default function playState(game) {
 
     var game = game;
     var ASSET_URL = "assets/"
-
     var socket; //Declare it in this scope, initialize in the `create` function
     var other_players = {};
     var player = {
-        sprite: null,//Will hold the sprite when it's created 
+        sprite: null,//Will hold the sprite when it's created
         speed_x: 0,// This is the speed it's currently moving at
         speed_y: 0,
-        speed: .5, // This is the parameter for how fast it should move 
+        speed: .5, // This is the parameter for how fast it should move
         friction: 0.95,
         shot: false,
         update: function () {
+            console.log(game);
             // Lerp rotation towards mouse
             var dx = (game.input.mousePointer.x + game.camera.x) - this.sprite.x;
             var dy = (game.input.mousePointer.y + game.camera.y) - this.sprite.y;
@@ -51,10 +51,10 @@ export default function playState(game) {
                 bullet.speed_x = speed_x;
                 bullet.speed_y = speed_y;
                 bullet.sprite = game.add.sprite(this.sprite.x + bullet.speed_x,this.sprite.y + bullet.speed_y,'bullet');
-                bullet_array.push(bullet); 
+                bullet_array.push(bullet);
                 */
                 this.shot = true;
-                // Tell the server we shot a bullet 
+                // Tell the server we shot a bullet
                 socket.emit('shoot-bullet', { x: this.sprite.x, y: this.sprite.y, angle: this.sprite.rotation, speed_x: speed_x, speed_y: speed_y })
             }
             if (!game.input.activePointer.leftButton.isDown) this.shot = false;
@@ -74,9 +74,10 @@ export default function playState(game) {
 
     };
 
+    // Fixes new player rendering issue.
     var CreateShip = function (type, x, y, angle) {
-        // type is an int that can be between 1 and 6 inclusive 
-        // returns the sprite just created 
+        // type is an int that can be between 1 and 6 inclusive
+        // returns the sprite just created
         var sprite = game.add.sprite(x, y, 'ship' + String(type) + '_1');
         sprite.rotation = angle;
         sprite.anchor.setTo(0.5, 0.5);
@@ -86,7 +87,7 @@ export default function playState(game) {
     return {
 
         create: function () {
-            // Create water tiles 
+            // Create water tiles
             for (var i = 0; i <= WORLD_SIZE.w / 64 + 1; i++) {
                 for (var j = 0; j <= WORLD_SIZE.h / 64 + 1; j++) {
                     var tile_sprite = game.add.sprite(i * 64, j * 64, 'water');
@@ -178,17 +179,18 @@ export default function playState(game) {
 
         },
 
-        GameLoop: function () {
-            player.update();
+        update: function () {
 
-            // Move camera with player 
+            player.update(game);
+
+            // Move camera with player
             var camera_x = player.sprite.x - WINDOW_WIDTH / 2;
             var camera_y = player.sprite.y - WINDOW_HEIGHT / 2;
             game.camera.x += (camera_x - game.camera.x) * 0.08;
             game.camera.y += (camera_y - game.camera.y) * 0.08;
 
-            // Each player is responsible for bringing their alpha back up on their own client 
-            // Make sure other players flash back to alpha = 1 when they're hit 
+            // Each player is responsible for bringing their alpha back up on their own client
+            // Make sure other players flash back to alpha = 1 when they're hit
             for (var id in other_players) {
                 if (other_players[id].alpha < 1) {
                     other_players[id].alpha += (1 - other_players[id].alpha) * 0.16;
@@ -197,13 +199,13 @@ export default function playState(game) {
                 }
             }
 
-            // Interpolate all players to where they should be 
+            // Interpolate all players to where they should be
             for (var id in other_players) {
                 var p = other_players[id];
                 if (p.target_x != undefined) {
                     p.x += (p.target_x - p.x) * 0.16;
                     p.y += (p.target_y - p.y) * 0.16;
-                    // Intepolate angle while avoiding the positive/negative issue 
+                    // Intepolate angle while avoiding the positive/negative issue
                     var angle = p.target_rotation;
                     var dir = (angle - p.rotation) / (Math.PI * 2);
                     dir -= Math.round(dir);
@@ -211,7 +213,6 @@ export default function playState(game) {
                     p.rotation += dir * 0.16;
                 }
             }
-
         }
     }
 }
