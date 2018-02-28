@@ -2,7 +2,7 @@ export default function loadState(game) {
     var ASSET_URL = "img/"
     return {
         preload: function () {
-            this.game= game;
+            this.game = game;
             this.game.load.crossOrigin = "Anonymous";
             game.stage.backgroundColor = "#1199DA";
 
@@ -14,12 +14,11 @@ export default function loadState(game) {
                 this.game.load.image('ship' + String(i) + '_4', ASSET_URL + 'ship' + String(i) + '_4.png');
             }
 
-            game.load.image('bullet', ASSET_URL + 'cannon_ball.png');
-            game.load.image('water', ASSET_URL + 'water_tile.png');
+            this.game.load.image('bullet', ASSET_URL + 'cannon_ball.png');
+            this.game.load.image('water', ASSET_URL + 'water_tile.png');
         },
         create: function () {
             this.game.state.start('play')
         }
     }
-
 }

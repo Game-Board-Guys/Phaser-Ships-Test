@@ -2,9 +2,9 @@ import io from 'socket.io-client';
 
 export default function playState(game) {
     //We first initialize the phaser game object
-    var WINDOW_WIDTH = 1200;
-    var WINDOW_HEIGHT = 1200;
-    var WORLD_SIZE = { w: 1200, h: 1200 };
+    var WINDOW_WIDTH = 800;
+    var WINDOW_HEIGHT = 800;
+    var WORLD_SIZE = { w: 800, h: 800 };
 
     var water_tiles = [];
     var bullet_array = [];
@@ -66,23 +66,24 @@ export default function playState(game) {
                 this.sprite.alpha = 1;
             }
 
-            // Tell the server we've moved 
-            socket.emit('move-player', { x: this.sprite.x, y: this.sprite.y, angle: this.sprite.rotation })
+            // Tell the server we've moved
+            socket.emit('move-player', { x: this.sprite.x, y: this.sprite.y, angle: this.sprite.rotation });
 
         }
 
 
     };
-    return {
 
-        CreateShip: function (type, x, y, angle) {
-            // type is an int that can be between 1 and 6 inclusive 
-            // returns the sprite just created 
-            var sprite = game.add.sprite(x, y, 'ship' + String(type) + '_1');
-            sprite.rotation = angle;
-            sprite.anchor.setTo(0.5, 0.5);
-            return sprite;
-        },
+    var CreateShip = function (type, x, y, angle) {
+        // type is an int that can be between 1 and 6 inclusive 
+        // returns the sprite just created 
+        var sprite = game.add.sprite(x, y, 'ship' + String(type) + '_1');
+        sprite.rotation = angle;
+        sprite.anchor.setTo(0.5, 0.5);
+        return sprite;
+    };
+
+    return {
 
         create: function () {
             // Create water tiles 
@@ -118,7 +119,7 @@ export default function playState(game) {
                     // If the player hasn't been created yet
                     if (other_players[id] == undefined && id != socket.id) { // Make sure you don't create yourself
                         var data = players_data[id];
-                        var p = this.CreateShip(data.type, data.x, data.y, data.angle);
+                        var p = CreateShip(data.type, data.x, data.y, data.angle);
                         other_players[id] = p;
                         console.log("Created new player at (" + data.x + ", " + data.y + ")");
                     }

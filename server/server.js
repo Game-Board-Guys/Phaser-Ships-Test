@@ -3,10 +3,11 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http); // Here's where we include socket.io as a node module 
 
-// Serve the index page 
-app.get("/", function (request, response) {
-  response.sendFile(__dirname + '/index.html'); 
-});
+// We no longer need this.
+// // Serve the index page 
+// app.get("/", function (request, response) {
+//   response.sendFile(__dirname + '/index.html'); 
+// });
 
 // Serve the assets directory
 app.use('/assets',express.static('assets'))
@@ -28,13 +29,13 @@ io.on('connection', function(socket){
 		// Broadcast a signal to everyone containing the updated players list
 		io.emit('update-players',players);
 	})
-  
+
   // Listen for a disconnection and update our player table 
   socket.on('disconnect',function(state){
     delete players[socket.id];
     io.emit('update-players',players);
-  }) 
-  
+  })
+
   // Listen for move events and tell all other clients that something has moved 
   socket.on('move-player',function(position_data){
     if(players[socket.id] == undefined) return; // Happens if the server restarts and a client is still connected 
@@ -43,7 +44,7 @@ io.on('connection', function(socket){
     players[socket.id].angle = position_data.angle; 
     io.emit('update-players',players);
   })
-  
+
   // Listen for shoot-bullet events and add it to our bullet array
   socket.on('shoot-bullet',function(data){
     if(players[socket.id] == undefined) return;
@@ -60,9 +61,9 @@ io.on('connection', function(socket){
 function ServerGameLoop(){
   for(var i=0;i<bullet_array.length;i++){
     var bullet = bullet_array[i];
-    bullet.x += bullet.speed_x; 
-    bullet.y += bullet.speed_y; 
-    
+    bullet.x += bullet.speed_x;
+    bullet.y += bullet.speed_y;
+
     // Check if this bullet is close enough to hit any player 
     for(var id in players){
       if(bullet.owner_id != id){
@@ -75,13 +76,13 @@ function ServerGameLoop(){
         }
       }
     }
-    
+
     // Remove if it goes too far off screen 
     if(bullet.x < -10 || bullet.x > 1000 || bullet.y < -10 || bullet.y > 1000){
         bullet_array.splice(i,1);
         i--;
     }
-        
+
   }
   // Tell everyone where all the bullets are by sending the whole array
   io.emit("bullets-update",bullet_array);

@@ -4,7 +4,6 @@ import menuState from './states/menu';
 import playState from './states/play';
 import winState from './states/win';
 import loseState from './states/lose';
-import io from 'socket.io-client';
 
 window.PIXI = require('phaser-ce/build/custom/pixi');
 window.p2 = require('phaser-ce/build/custom/p2');
@@ -15,13 +14,10 @@ export default function Game() {
 
     game.state.add('boot', bootState);
     game.state.add('load', loadState(game));
-    game.state.add('menu', menuState);
+    // game.state.add('menu', menuState);
     game.state.add('play', playState(game));
     // game.state.add('win', winState);
     // game.state.add('lose', loseState);
 
     game.state.start('boot');
-    // var socket = io();
-
-    // socket.emit('message');
 }
